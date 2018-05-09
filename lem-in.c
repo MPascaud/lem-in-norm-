@@ -6,7 +6,7 @@
 /*   By: mpascaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/10 20:29:32 by mpascaud          #+#    #+#             */
-/*   Updated: 2018/05/09 17:02:09 by mpascaud         ###   ########.fr       */
+/*   Updated: 2018/05/09 22:23:33 by mpascaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,31 +250,25 @@ int		ft_disiz_beftunnel(t_filist *filist, t_roomlist *roomlist)
 	int		j;
 
 	there_is_tunnel = 0;
-	i = 0;
-	j = 0;
-	while ((filist->line)[i] != '\0')
-	{
+	i = -1;
+	j = -1;
+	while ((filist->line)[++i] != '\0')
 		if ((filist->line)[i] == '-')
 		{
 			there_is_tunnel = 1;
 			i++;
 			break ;
 		}
-		i++;
-	}
 	if (there_is_tunnel == 0)
 		return (0);
-
-	while ((roomlist->name)[j] != '\0')
+	while ((roomlist->name)[++j] != '\0')
 	{
 		if ((filist->line)[i] != (roomlist->name)[j] || (filist->line)[i] == '\0')
 			return (0);
 		i++;
-		j++;
 	}
 	if ((filist->line)[i] != '\0')
 		return (0);
-
 	return (1);
 }
 
@@ -291,12 +285,9 @@ char	*ft_link(t_filist *filist, t_roomlist *roomlist)
 	while ((filist->line)[start] != '-')
 		start++;
 	start++;
-	tmp = start;
-	while ((filist->line)[tmp] != '\0')
-	{
-		tmp++;
+	tmp = start - 1;
+	while ((filist->line)[++tmp] != '\0')
 		i++;
-	}
 	tunname = (char*)malloc(sizeof(char) * (i + 1));
 	tmp = start;
 	i = 0;
@@ -810,36 +801,26 @@ int		ft_way(t_filist *filist, t_roomlist *roomlist, t_roomlist *roomlistart, int
 {
 	int		progress;
 
-
 	filist = filist->next;
 	roomlist = roomlist->next;
-
 	progress = 0;
 	while (roomlist != NULL)
 	{
 		if (roomlist->place == 0 || roomlist->place == -2)
-		{
 			roomlist->way = way;
-		}
 		roomlist = roomlist->next;
 	}
-
 	roomlist = roomlistart;
 	roomlist = roomlist->next;
-
 	while (1)
 	{
 		while (roomlist != NULL)
 		{
 			if (roomlist->way == 0 && roomlist->place != 0 && roomlist->taken == 0 && ft_search_previous(roomlist, roomlistart, way) == 1)
-			{
 				roomlist->way = way;
-			}
 
 			if ((roomlist->way == way || roomlist->way == 0) && roomlist->place != 0 && roomlist->place != -2 && (ft_search_next(roomlist, roomlistart, way) == 0 || ft_search_previous(roomlist, roomlistart, way) == -1))
-			{
 				roomlist->way = -1;
-			}
 			roomlist = roomlist->next;
 		}
 		if (ft_no_zero(roomlistart) == 0)
@@ -855,13 +836,9 @@ int		ft_way(t_filist *filist, t_roomlist *roomlist, t_roomlist *roomlistart, int
 				return (1);
 			}
 			else
-			{
 				return (0);
-			}
 		}
 	}
-
-
 	return (0);
 }
 
@@ -1199,17 +1176,13 @@ void    ft_free(t_filist *filistart, t_roomlist *roomlist, t_listlist *listlist,
 
 int		ft_at_least_one_room(char *tmp)
 {
-	int		result;
 	int		i;
 
-	result = 0;
 	i = 0;
-	if (tmp == NULL)
+	if (tmp == NULL || tmp[0] == '\0' || tmp[0] == '\n')
 		return (0);
 	while (tmp[i] != '\0')
-	{
 		i++;
-	}
 	i--;
 	while (ft_isdigit(tmp[i]) == 1)
 	{
@@ -1225,9 +1198,7 @@ int		ft_at_least_one_room(char *tmp)
 			return (0);
 	}
 	if (tmp[i] == ' ' && tmp[0] != '#')
-	{
 		return (1);
-	}
 	return (0);
 }
 
@@ -1238,12 +1209,10 @@ t_namelist		*ft_new_name(char *tmp, t_namelist *namelist)
 	int			i;
 	int			limit;
 
-
 	i = 0;
 	newlink = (t_namelist*)malloc(sizeof(t_namelist));
 	newlink->previous = namelist;
 	newlink->next = NULL;
-
 	while (tmp[i])
 		i++;
 	i--;
@@ -1252,18 +1221,12 @@ t_namelist		*ft_new_name(char *tmp, t_namelist *namelist)
 	i--;
 	while (ft_isdigit(tmp[i]) == 1)
 		i--;
-	
 	limit = i;
-	i = 0;
+	i = -1;
 	newlink->name = ft_strnew(limit);
-	while (i < limit)
-	{
+	while (++i < limit)
 		(newlink->name)[i] = tmp[i];
-		i++;
-	}
-
 	return (newlink);
-
 }
 
 int		ft_already(char	*name, t_namelist *namelistart)
@@ -1284,19 +1247,9 @@ int		ft_already(char	*name, t_namelist *namelistart)
 	return (0);
 }
 
-int			ft_not_yet(char *tmp, t_namelist *namelistart)
+
+int			ft_not_yet_first_room(char *tmp, int i, t_namelist *namelist, int ok)
 {
-	t_namelist	*namelist;
-	int			i;
-	int			j;
-	int			ok;
-
-	namelist = namelistart;
-	namelist = namelist->next;
-	i = 0;
-	j = 0;
-	ok = 0;
-
 	while (namelist != NULL)
 	{
 		while (tmp[i] != '-')
@@ -1314,10 +1267,15 @@ int			ft_not_yet(char *tmp, t_namelist *namelistart)
 	}
 	if (ok == 0)
 		return (1);
-	ok = 0;
-	i = 0;
-	namelist = namelistart;
-	namelist = namelist->next;
+	return (0);
+
+}
+
+int			ft_not_yet_second_room(char *tmp, int i, t_namelist *namelist, int ok)
+{
+	int		j;
+
+	j = 0;
 	while (namelist != NULL)
 	{
 		while (tmp[i] != '-')
@@ -1326,13 +1284,9 @@ int			ft_not_yet(char *tmp, t_namelist *namelistart)
 		while (tmp[i] != '\0')
 		{
 			if (tmp[i] != (namelist->name)[j])
-			{
 				break ;
-			}
 			if (tmp[i + 1] == '\0')
-			{
 				ok = 1;
-			}
 			i++;
 			j++;
 		}
@@ -1345,47 +1299,47 @@ int			ft_not_yet(char *tmp, t_namelist *namelistart)
 	return (0);
 }
 
-int		ft_valid_line(char *tmp, int check, t_namelist *namelistart)
+int			ft_not_yet(char *tmp, t_namelist *namelistart)
 {
-	static int	step;
-	int			i;
 	t_namelist	*namelist;
-	int			tunnel;
-
-	i = 0;
-	tunnel = 0;
+	int			i;
+	int			ok;
 
 	namelist = namelistart;
-	if (tmp != NULL)
-	{
-		if (tmp[0] == '#')
-			return (1);
-	}
-	if (check == 1)
-	{
-		if (step == 3)
-			return (3);
-		else
-			return (-1);
-	}
-	if (tmp != NULL && step == 0)
-	{
+	namelist = namelist->next;
+	i = 0;
+	ok = 0;
+	if (ft_not_yet_first_room(tmp, i, namelist, ok) == 1)
+		return (1);
+	namelist = namelistart;
+	namelist = namelist->next;
+	if (ft_not_yet_second_room(tmp, i, namelist, ok) == 1)
+		return (1);
+	return (0);
+}
+
+int		ft_step_one(char *tmp, int i, int *step)
+{
+
+
 		while (tmp[i] != '\0')
 		{
 			if (ft_isdigit(tmp[i]) == 0)
 			{
-				step = 0;
+				*step = 0;
 				return (0);
 			}
 			i++;
 		}
-		step = 1;
-		return (step);
-	}
-	if (tmp != NULL && (step == 1 || step == 2))
-	{
-		if (ft_at_least_one_room(tmp) == 1)
-		{
+		*step = 1;
+		return (*step);
+
+}
+
+
+int		ft_step_two(char *tmp, int *step, t_namelist *namelist, t_namelist *namelistart)
+{
+
 			while (namelist->next != NULL)
 				namelist = namelist->next;
 			namelist->next = ft_new_name(tmp, namelist);
@@ -1394,13 +1348,19 @@ int		ft_valid_line(char *tmp, int check, t_namelist *namelistart)
 			{
 				return (0);
 			}
-			step = 2;
-			return (step);
-		}
-	}
+			*step = 2;
+			return (*step);
 
-	if (tmp != NULL && (step == 2 || step == 3))
-	{
+}
+
+
+int		ft_step_three(char *tmp, int *step, t_namelist *namelistart)
+{
+	int		i;
+	int		tunnel;
+
+	i = 0;
+	tunnel = 0;
 		while (tmp[i])
 		{
 			if (tmp[i] == '-')
@@ -1414,9 +1374,30 @@ int		ft_valid_line(char *tmp, int check, t_namelist *namelistart)
 			if (ft_not_yet(tmp, namelistart) == 1)
 				return (0);
 		}
-		step = 3;
-		return (step);
-	}
+		*step = 3;
+		return (*step);
+
+}
+
+int		ft_valid_line(char *tmp, int check, t_namelist *namelistart)
+{
+	static int	step;
+	t_namelist	*namelist;
+
+	namelist = namelistart;
+	if (tmp != NULL)
+		if (tmp[0] == '#')
+			return (1);	
+	if (check == 1 && step == 3)
+		return (3);
+	if (check == 1 && step != 3)
+		return (-1);
+	if (tmp != NULL && step == 0)
+		return (ft_step_one(tmp, 0, &step));
+	if (tmp != NULL && (step == 1 || step == 2) && ft_at_least_one_room(tmp) == 1)
+		return (ft_step_two(tmp, &step, namelist, namelistart));
+	if (tmp != NULL && (step == 2 || step == 3))
+		return (ft_step_three(tmp, &step, namelistart));	
 	return (step);
 }
 
@@ -1472,92 +1453,117 @@ void	ft_print_anthill(t_filist *filistart)
 	}
 }
 
-
-int		main(int argc, char **argv)
+int		ft_firsts_filist_namelist_argc(t_variables *var, int argc)
 {
-	char		*tmp;
-	t_filist	*filist;
-	t_filist	*filistart;
-	t_roomlist	*roomlist;
-	t_roomlist	*roomlistart;
-	t_listlist	*listlist;
-	t_listlist	*listlistart;
-	t_namelist	*namelist;
-	t_namelist	*namelistart;
-	int			way;
-
+	var->tmp = NULL;
 	if (argc != 1)
 	{
 		printf("ERROR\n");
+		free(var);
 		return (0);
 	}
-	filist = (t_filist*)malloc(sizeof(t_filist));
-	filist->previous = NULL;
-	filist->line = NULL;
-	filist->next = NULL;
-	filistart = filist;
-	way = 1;
-	namelist = (t_namelist*)malloc(sizeof(t_namelist));
-	namelist->name = NULL;
-	namelist->previous = NULL;
-	namelist->next = NULL;
-	namelistart = namelist;
-	tmp = NULL;
-	while (get_next_line(0, &tmp))
+	var->filist = (t_filist*)malloc(sizeof(t_filist));
+	var->filist->previous = NULL;
+	var->filist->line = NULL;
+	var->filist->next = NULL;
+	var->filistart = var->filist;
+	var->namelist = (t_namelist*)malloc(sizeof(t_namelist));
+	var->namelist->name = NULL;
+	var->namelist->previous = NULL;
+	var->namelist->next = NULL;
+	var->namelistart = var->namelist;
+
+	return (1);
+}
+
+void	ft_gnl(t_variables *var)
+{
+	while (get_next_line(0, &var->tmp))
 	{
-		if (ft_valid_line(tmp, 0, namelistart) == 0)
-		{
+		if (ft_valid_line(var->tmp, 0, var->namelistart) == 0)
 			break ;
-		}
-		filist->next = ft_filstnew(tmp, filist);
-		filist = filist->next;
-		free(tmp);
+		var->filist->next = ft_filstnew(var->tmp, var->filist);
+		var->filist = var->filist->next;
+		free(var->tmp);
 	}
-	free(tmp);
-	ft_show_filist(filistart);
+	free(var->tmp);
+}
+
+void	ft_first_roomlist(t_variables *var)
+{
+	var->roomlist = (t_roomlist*)malloc(sizeof(t_roomlist));
+	var->roomlist->previous = NULL;
+	var->roomlist->place = 0;
+	var->roomlist->name = NULL;
+	var->roomlist->previous = NULL;
+	var->roomlist->next = NULL;
+	var->roomlistart = var->roomlist;
+}
+
+int		ft_possible(t_variables *var)
+{
+	var->way = 1;
+	if (ft_start_to_end(var->filistart, var->roomlist, var->roomlistart, var->way) == 0)
+	{
+		while (ft_way(var->filistart, var->roomlist, var->roomlistart, var->way) == 1)
+			(var->way)++;
+		(var->way)--;
+	}
+	if (var->way == 0 || ft_atoi(var->filistart->next->line) == 0
+			|| ft_atoi(var->filistart->next->line) < 0)
+	{
+		printf("ERROR\n");
+		ft_free_no_listlist(var->filistart, var->roomlist, var->namelist);
+		free(var);
+		return (0);
+	}
+	return (1);
+}
+
+void	ft_build(t_variables *var)
+{
+	ft_first_roomlist(var);
+	ft_name(var->filistart, var->roomlist);
+	ft_init(var->roomlist);
+	ft_place_start(var->filistart, var->roomlist);
+	ft_place_end(var->filistart, var->roomlist);
+	ft_tunnels(var->filistart, var->roomlist);
+	ft_place(var->filistart, var->roomlist);
+}
+
+void	ft_first_listlist(t_variables *var)
+{
+	var->listlist = (t_listlist*)malloc(sizeof(t_listlist));
+	var->listlist->previous = NULL;
+	var->listlist->waylist = NULL;
+	var->listlist->next = NULL;
+}
+
+int		main(int argc, char **argv)
+{
+	t_variables	*var;
+
+	var = (t_variables*)malloc(sizeof(t_variables));
+	if (ft_firsts_filist_namelist_argc(var, argc) == 0)
+		return (0);
+	ft_gnl(var);
+	ft_show_filist(var->filistart);
 	if (ft_valid_line(NULL, 1, NULL) != 3)
 	{
 		printf("ERROR\n");
-		ft_free_only_two(filistart, namelist);
+		ft_free_only_two(var->filistart, var->namelist);
+		free(var);
 		return (0);
 	}
-	roomlist = (t_roomlist*)malloc(sizeof(t_roomlist));
-	roomlist->previous = NULL;
-	roomlist->place = 0;
-	roomlist->name = NULL;
-	roomlist->previous = NULL;
-	roomlist->next = NULL;
-	roomlistart = roomlist;
-	ft_name(filistart, roomlist);
-	ft_init(roomlist);
-	ft_place_start(filistart, roomlist);
-	ft_place_end(filistart, roomlist);
-	ft_tunnels(filistart, roomlist);
-	ft_place(filistart, roomlist);
-	if (ft_start_to_end(filistart, roomlist, roomlistart, way) == 0)
-	{
-		while (ft_way(filistart, roomlist, roomlistart, way) == 1)
-		{
-			way++;
-		}
-		way--;
-	}
-	if (way == 0 || ft_atoi(filistart->next->line) == 0
-			|| ft_atoi(filistart->next->line) < 0)
-	{
-		printf("ERROR\n");
-		ft_free_no_listlist(filistart, roomlist, namelist);
+	ft_build(var);
+	if (ft_possible(var) == 0)
 		return (0);
-	}
-	listlist = (t_listlist*)malloc(sizeof(t_listlist));
-	listlist->previous = NULL;
-	listlist->waylist = NULL;
-	listlist->next = NULL;
-	ft_listlist(listlist, roomlistart, roomlist, way);
-	ft_ants(listlist, filistart);
-	listlistart = listlist;	
-	listlist = listlistart;
-	ft_print_anthill(filistart);
-	ft_free(filistart, roomlist,listlist, namelist);
+	ft_first_listlist(var);
+	ft_listlist(var->listlist, var->roomlistart, var->roomlist, var->way);
+	ft_ants(var->listlist, var->filistart);
+	ft_show_listlist(var->listlist);//<<<<<<<<<<<<----------------------------
+	ft_print_anthill(var->filistart);
+	ft_free(var->filistart, var->roomlist, var->listlist, var->namelist);
+	free(var);
 	return (0);
 }

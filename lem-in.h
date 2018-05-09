@@ -6,7 +6,7 @@
 /*   By: mpascaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/10 20:44:23 by mpascaud          #+#    #+#             */
-/*   Updated: 2018/05/04 22:02:43 by mpascaud         ###   ########.fr       */
+/*   Updated: 2018/05/09 17:28:58 by mpascaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,23 @@ typedef struct	s_namelist
 	struct s_namelist	*previous;
 	struct s_namelist	*next;
 }				t_namelist;
+
+typedef struct	s_variables
+{
+
+	char        *tmp;
+	t_filist    *filist;
+	t_filist    *filistart;
+	t_roomlist  *roomlist;
+	t_roomlist  *roomlistart;
+	t_listlist  *listlist;
+	t_listlist  *listlistart;
+	t_namelist  *namelist;
+	t_namelist  *namelistart;
+	int         way;
+
+}				t_variables;
+
 
 #endif
 
