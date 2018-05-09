@@ -1,0 +1,63 @@
+10
+#rooms
+##start
+start 0 0
+##end
+end 1 1
+A0 2 2
+A3 5 5
+B0 6 6
+BLOP 4 5
+B1 7 7
+TEST 45555 4
+B2 8 8
+B3 9 9
+C4 10 10
+C5 11 11
+C6 12 12
+after 45 4
+C7 13 13
+TEST2 4 5
+afterafter 4 2
+D2 14 14
+D3 15 15
+D4 16 16
+TEST3 4 5
+D5 17 17
+E1 18 18
+E2 19 19
+E3 20 20
+E4 21 21
+A1 3 3
+A2 4 4
+start-A0
+start-B0
+B0-B1
+B1-B2
+B2-B3
+C5-C6
+C6-C7
+A3-end
+A0-A1
+C7-end
+A1-A2
+A2-A3
+A1-D2
+end-after
+D2-D3
+D3-D4
+start-TEST
+E1-E2
+TEST2-TEST3
+after-afterafter
+E2-E3
+TEST-TEST2
+E3-E4
+D4-D5
+B3-A3
+B3-C4
+B1-TEST
+C4-C5
+D5-end
+E4-end
+A0-E1
